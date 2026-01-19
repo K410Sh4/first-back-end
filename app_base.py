@@ -1,3 +1,5 @@
+import os 
+from dotenv import load_dotenv
 from typing import Optional
 from fastapi import FastAPI, HTTPException, status
 from contextlib import asynccontextmanager
@@ -8,13 +10,8 @@ import aiomysql
 import json
 import ssl
 
+load_dotenv()
 ssl_ctx = ssl.create_default_context()
-
-SQL_HOST = "serverless-europe-west2.sysp0000.db2.skysql.com"
-SQL_PORTA = 4036
-SQL_USUÁRIO = "dbpgf28848341"
-SQL_SENHA =  "jZ6F~gwQIbHeknUeZxJZV"
-SQL_BANCO = "clientes"
 
 # ---------------------------
 # CONEXÃO COM MYSQL
@@ -22,17 +19,17 @@ SQL_BANCO = "clientes"
 
 async def inicializar_banco():
     conn = await aiomysql.connect(
-        host= SQL_HOST,
-        port= SQL_PORTA,
-        user=SQL_USUÁRIO,
-        password=SQL_SENHA,
+        host=str(os.getenv("SQL_HOSTNAME")),
+        port=int(os.getenv("SQL_PORT")),
+        user=os.getenv("SQL_USER"),
+        password=os.getenv("SQL_PASSWORD"),
         autocommit=True,
-        ssl = ssl_ctx
+        ssl=ssl_ctx 
     )
     cursor = await conn.cursor()
 
-    await cursor.execute("CREATE DATABASE IF NOT EXISTS lanchonete")
-    await cursor.execute("USE lanchonete")
+    await cursor.execute(f"CREATE DATABASE IF NOT EXISTS {os.getenv('DB_NAME')}") 
+    await cursor.execute(f"USE {os.getenv('DB_NAME')}")
 
     await cursor.execute("""
         CREATE TABLE IF NOT EXISTS pedidos (
@@ -53,13 +50,13 @@ async def inicializar_banco():
 
 async def get_conn():
     return await aiomysql.connect(
-        host=SQL_HOST,
-        port=SQL_PORTA,
-        user=SQL_USUÁRIO,
-        password=SQL_SENHA,
-        db="CLIENTES",   # <- agora o banco já existe
+        host=os.getenv("SQL_HOSTNAME"),
+        port=int(os.getenv("SQL_PORT")),
+        user=os.getenv("SQL_USER"),
+        password=os.getenv("SQL_PASSWORD"),
+        db=os.getenv("SQL_DBNAME"),   # <- agora o banco já existe
         autocommit=True,
-        ssl = ssl_ctx
+        ssl=ssl_ctx  # MariaDB Cloud exige SSL
     )
 ## END
 
