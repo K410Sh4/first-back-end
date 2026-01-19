@@ -19,10 +19,10 @@ ssl_ctx = ssl.create_default_context()
 
 async def inicializar_banco():
     conn = await aiomysql.connect(
-        host=str(os.getenv("serverless-europe-west2.sysp0000.db2.skysql.com")),
-        port=int(os.getenv("4036")),
-        user=os.getenv("dbpgf28848341"),
-        password=os.getenv("jZ6F~gwQIbHeknUeZxJZV"),
+        host=str(os.getenv("SQL_HOSTNAME")),
+        port=int(os.getenv("SQL_PORT")),
+        user=os.getenv("SQL_USER"),
+        password=os.getenv("SQL_PASSWORD"),
         autocommit=True,
         ssl=ssl_ctx 
     )
