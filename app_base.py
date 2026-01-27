@@ -55,7 +55,7 @@ async def get_conn():
         port=int(os.getenv("SQL_PORT")),
         user=os.getenv("SQL_USER"),
         password=os.getenv("SQL_PASSWORD"),
-        db=os.getenv("SQL_DBNAME"),   # <- agora o banco já existe
+        db=os.getenv("DB_NAME"),   # <- agora o banco já existe.
         autocommit=True,
         ssl=ssl_ctx  # MariaDB Cloud exige SSL
     )
