@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 import aiomysql
 import json
 import ssl
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 ssl_ctx = ssl.create_default_context()
@@ -75,6 +76,14 @@ app = FastAPI(
     title="Lanchonete do Bairro",
     summary="Aplicação de registro de pedidos da lanchonete",
     lifespan=app_startup
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ---------------------------
